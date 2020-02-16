@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Books
+{% endblock %}
+
+{% block body %}
+
+<form action="{{ url_for('review') }}" method="post">
+  <div class="col">
+    <label>Search for Book</label>
+    <input type="text" class="form-control" placeholder="ISBN/Title/Author" name="bookid">
+  </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+
+{% endblock %}

@@ -1,0 +1,6 @@
+Flask
+Flask-Session
+Flask-Login
+psycopg2-binary
+SQLAlchemy
+passlib

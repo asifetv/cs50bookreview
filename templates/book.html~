@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Book Review
+{% endblock %}
+
+{% block body %}
+
+<h1>Title:{{ book.title }}</h1>
+<h2>Author: {{ book.author }}</h2>
+<h3>ISBN: {{ book.isbn }}</h3>
+<h3>Avg. Rating:{{ book.average_rating }}</h3>
+<h3>Rating Count:{{ book.ratings_count }}</h3>
+
+<div>User Rating: {{ book.userrating }}</div>
+<div>User Review: {{ book.userreview }}</div>
+
+<form id="logout-form" action="{{ url_for('logout')}}" method="POST">
+<button type="submit" class="btn btn-primary">LogOut</button>
+</form>
+
+<div class="form-group">
+    <label for="exampleFormControlTextarea1">Add your review</label>
+    <textarea class="form-control" id="UserReviewTextArea" rows="3"></textarea>
+
+    <form id="userreview-form" action="{{ url_for('userreview', isbn=book.isbn)}}" method="POST">
+<button type="submit" class="btn btn-primary">Add Review</button>
+</form>
+
+</div>
+
+
+{% endblock %}
