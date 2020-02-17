@@ -12,8 +12,11 @@ Book Review
 <h3>Avg. Rating:{{ book.average_rating }}</h3>
 <h3>Rating Count:{{ book.ratings_count }}</h3>
 
-<div>User Rating: {{ book.userrating }}</div>
-<div>User Review: {{ book.userreview }}</div>
+<h2> User Reviews </h2>
+    <div>User Rating: {{ book.userrating }}</div>
+    {% for review in book.reviews %}
+    <div>{{ review }}</div>
+    {% endfor %}
 
 <form id="logout-form" action="{{ url_for('logout')}}" method="POST">
 <button type="submit" class="btn btn-primary">LogOut</button>

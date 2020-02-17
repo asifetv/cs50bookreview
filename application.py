@@ -80,7 +80,7 @@ def userreview ():
         db.commit()
     else:
         flash("Review already exists")
-    print (f"userreview: { review } userrating: { rating }")
+    #print (f"userreview: { review } userrating: { rating }")
     return render_template("review.html", isbn=isbn)
     
     
@@ -88,7 +88,7 @@ def userreview ():
 @flask_login.login_required
 def bookreview():
     isbn = request.args.get("isbn")
-    print(isbn)
+    #print(isbn)
     book = db.execute ("SELECT * FROM books WHERE isbn = :isbn", {"isbn":isbn}).fetchall()
     if len(book) == 1:
         data_object={}
@@ -103,18 +103,21 @@ def bookreview():
             goodread_data = res.json()
             data_object["average_rating"]=goodread_data["books"][0]["average_rating"]
             data_object["ratings_count"]=goodread_data["books"][0]["ratings_count"]
-            print(f"Username is { flask_login.current_user.id }")
-            userfeedback = db.execute("SELECT ratings, review FROM reviewtable WHERE username = :username and isbn = :isbn", {"username":flask_login.current_user.id, "isbn":isbn }).fetchall()
-            if (userfeedback):
-                print(userfeedback[0], len(userfeedback))
-            if len(userfeedback) > 1:
-                return render_template("error.html", message="review Table messed up")
-            elif len(userfeedback) == 1:
-                data_object["userrating"]=userfeedback[0].ratings
-                data_object["userreview"]=userfeedback[0].review
-            else:
-                data_object["userrating"]=0
-                data_object["userreview"]=""
+            #print(f"Username is { flask_login.current_user.id }")
+            reviews = db.execute("SELECT review FROM reviewtable WHERE isbn = :isbn", {"isbn":isbn }).fetchall()
+            data_object["reviews"]= reviews
+            ratings = db.execute("SELECT ratings FROM reviewtable WHERE isbn = :isbn", {"isbn":isbn}).fetchall()
+
+            sumL = 0
+            cntL = 0
+            for rating in ratings:
+                #print(rating[0])
+                sumL += rating[0]
+                cntL += 1
+            if (cntL):
+                mean = sumL/cntL
+                
+            data_object["userrating"] = mean
             return render_template("book.html", book=data_object)
     else:
         flash("Cpnflicting ISBN")
@@ -131,8 +134,8 @@ def review():
         bookid = request.form.get("bookid")
         books = db.execute("SELECT * FROM books WHERE isbn ~* :isbn OR title ~* :title OR author ~* :author", {"isbn": bookid, "title": bookid, "author": bookid}).fetchall()
 
-        for book in books:
-            print(book.title)
+        #for book in books:
+         #   print(book.title)
         return render_template("review.html", books=books)
 
 @app.route("/login", methods=["POST"])
@@ -167,7 +170,7 @@ def logout ():
 def signup():
     """ Signup for the application """
     if request.method == "GET":
-        print("Inside the signup function")
+        #print("Inside the signup function")
         return render_template("signup.html")
     elif request.method == "POST":
         username = request.form.get("username")
@@ -175,7 +178,7 @@ def signup():
         firstname = request.form.get("firstname")
         lastname = request.form.get("lastname")
         email = request.form.get("emailid")
-        print(username, pwdhash, firstname, lastname, email)
+        #print(username, pwdhash, firstname, lastname, email)
         #print(username, password, firstname, lastname)
         if db.execute("SELECT * FROM usertable WHERE username = :username", {"username": username}).rowcount > 0:
             flash("That username is already taken")
